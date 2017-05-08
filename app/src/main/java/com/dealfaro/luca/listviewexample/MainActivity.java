@@ -1,7 +1,7 @@
 package com.dealfaro.luca.listviewexample;
 
 import android.content.Context;
-import android.provider.Settings;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,11 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +32,8 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "lv-ex";
+
+    RequestQueue queue;
 
     private class ListElement {
         ListElement() {};
@@ -66,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Fills in the view.
             TextView tv = (TextView) newView.findViewById(R.id.itemText);
-            Button b = (Button) newView.findViewById(R.id.itemButton);
+            //Button b = (Button) newView.findViewById(R.id.itemButton);
             tv.setText(w.textLabel);
-            b.setText(w.buttonLabel);
+            //b.setText(w.buttonLabel);
 
             // Sets a listener for the button, and a tag for the button as well.
-            b.setTag(new Integer(position));
-            b.setOnClickListener(new View.OnClickListener() {
+            //b.setTag(new Integer(position));
+            /*b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // Reacts to a button press.
@@ -86,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     aList.remove(i);
                     aa.notifyDataSetChanged();
                 }
-            });
+            });*/
 
             // Set a listener for the whole list item.
             newView.setTag(w.textLabel);
@@ -97,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                     int duration = Toast.LENGTH_SHORT;
                     Toast toast = Toast.makeText(context, s, duration);
                     toast.show();
+
+//                    Intent intent = new Intent(context, ReaderActivity.class);
+//                    startActivity(intent);
                 }
             });
 
@@ -110,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        queue = Volley.newRequestQueue(this); // queue for JSON reponse
         aList = new ArrayList<ListElement>();
         aa = new MyAdapter(this, R.layout.list_element, aList);
         ListView myListView = (ListView) findViewById(R.id.listView);
@@ -121,9 +137,12 @@ public class MainActivity extends AppCompatActivity {
     public void clickRefresh (View v) {
         Log.i(LOG_TAG, "Requested a refresh of the list");
         Random rn = new Random();
-        SecureRandomString srs = new SecureRandomString();
+        //SecureRandomString srs = new SecureRandomString();
+
+        String get_url = "https://luca-ucsc-teaching-backend.appspot.com/hw4/get_news_sites";
+
         // How long a list do we make?
-        int n = 4 + rn.nextInt(10);
+        //int n = 4 + rn.nextInt(10);
         // Let's fill the array with n random strings.
         // NOTE: aList is associated to the array adapter aa, so
         // we cannot do here aList = new ArrayList<ListElement>() ,
@@ -131,14 +150,49 @@ public class MainActivity extends AppCompatActivity {
         // associated with aa.
         // aList = new ArrayList<ListElement>(); --- NO
         aList.clear();
-        for (int i = 0; i < n; i++) {
-            aList.add(new ListElement(
-                srs.nextString(), "Delete"
-            ));
-        }
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, get_url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            JSONArray news_site_arr = response.getJSONArray("news_sites");
+                            String title, subtitle, url;
+                            for (int i = 0; i < news_site_arr.length(); i++) {
+                                JSONObject c = news_site_arr.getJSONObject(i);
+                                title = c.getString("title");
+                                subtitle = c.getString("subtitle");
+                                url = c.getString("url");
+                                aList.add(new ListElement(title + "\n"
+                                        + subtitle + "\n" + url, "Delete" + i));
+                            }
+
+                            aa.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            //my_textView.setText("Received bad json: " + e.getStackTrace());
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                        Log.d(LOG_TAG, error.toString());
+                    }
+                });
+
+        queue.add(jsObjRequest);
+
+//        for (int i = 0; i < n; i++) {
+//            aList.add(new ListElement(
+//                "sup", "Delete"
+//            ));
+//        }
         // We notify the ArrayList adapter that the underlying list has changed,
         // triggering a re-rendering of the list.
-        aa.notifyDataSetChanged();
+        //aa.notifyDataSetChanged();
     }
 
 }
