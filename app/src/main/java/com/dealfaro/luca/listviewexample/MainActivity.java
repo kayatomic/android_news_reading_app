@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         clickRefresh(v);
     }
 
-
     public void clickRefresh (View v) {
         Log.i(LOG_TAG, "Requested a refresh of the list");
         Random rn = new Random();
