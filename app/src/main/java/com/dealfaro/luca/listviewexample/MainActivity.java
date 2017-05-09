@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private class ListElement {
         ListElement() {};
 
-        ListElement(String tl, String bl) {
-            textLabel = tl;
-            buttonLabel = bl;
+        ListElement(String title, String subtitle, String url) {
+            titleLabel = title;
+            subtitleLabel = subtitle;
+            urlLabel = url;
         }
 
-        public String textLabel;
-        public String buttonLabel;
+        public String titleLabel, subtitleLabel, urlLabel;
     }
 
     private ArrayList<ListElement> aList;
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             // Fills in the view.
             TextView tv = (TextView) newView.findViewById(R.id.itemText);
             //Button b = (Button) newView.findViewById(R.id.itemButton);
-            tv.setText(w.textLabel);
+            tv.setText(w.titleLabel);
             //b.setText(w.buttonLabel);
 
             // Sets a listener for the button, and a tag for the button as well.
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             });*/
 
             // Set a listener for the whole list item.
-            newView.setTag(w.textLabel);
+            newView.setTag(w.urlLabel);
             newView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -110,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, s, duration);
                     toast.show();
 
-//                    Intent intent = new Intent(context, ReaderActivity.class);
-//                    startActivity(intent);
+                    Intent intent = new Intent(context, ReaderActivity.class);
+                    intent.putExtra("URL", s);
+                    startActivity(intent);
                 }
             });
 
@@ -164,8 +165,7 @@ public class MainActivity extends AppCompatActivity {
                                 title = c.getString("title");
                                 subtitle = c.getString("subtitle");
                                 url = c.getString("url");
-                                aList.add(new ListElement(title + "\n"
-                                        + subtitle + "\n" + url, "Delete" + i));
+                                aList.add(new ListElement(title, subtitle, url));
                             }
 
                             aa.notifyDataSetChanged();
