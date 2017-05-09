@@ -1,7 +1,9 @@
 package com.dealfaro.luca.listviewexample;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,30 +27,46 @@ public class ReaderActivity extends AppCompatActivity {
     static final public String LOG_TAG = "webview_example";
 
     WebView myWebView;
-
+    String news_url = "www.google.com";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
         myWebView = (WebView) findViewById(R.id.webView1);
-        myWebView.setWebViewClient(new WebViewClient());
+        myWebView.setWebViewClient(new WebViewClient()); // change to new MyWebViewClient
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         // Binds the Javascript interface
         myWebView.addJavascriptInterface(new JavaScriptInterface(this), "Android");
 
-        String url = null;
+
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             finish(); // No idea what else to do
         } else {
-            url = extras.getString("URL");
+            news_url = extras.getString("URL");
         }
 
-        myWebView.loadUrl(url);
+        myWebView.loadUrl(news_url);
         myWebView.loadUrl("javascript:alert(\"Hello\")");
 
     }
+    /*
+    private class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (Uri.parse(url).getHost().contains(news_url)) {
+                // This is my web site, so do not override; let my WebView load the page
+                return false;
+            }
+            // Otherwise, the link is not for a page on my site,
+            // so launch another Activity that handles URLs
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+            return true;
+        }
+    }*/
+
 
     public class JavaScriptInterface {
         Context mContext; // Having the context is useful for lots of things,
@@ -116,6 +134,19 @@ public class ReaderActivity extends AppCompatActivity {
             myWebView.loadUrl(suspendUrl);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (myWebView.canGoBack()) {
+            myWebView.goBack();
+        } else {
+            // If it wasn't the Back key or there's no web page history,
+            // bubble up to the default
+            // system behavior (probably exit the activity)
+            super.onBackPressed();
+        }
+    }
+
 
 
 //    @Override
