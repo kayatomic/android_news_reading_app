@@ -78,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
             // Fills in the view.
             TextView tv = (TextView) newView.findViewById(R.id.itemText);
+            TextView subtitleView = (TextView) newView.findViewById(R.id.subtitleView);
             //Button b = (Button) newView.findViewById(R.id.itemButton);
             tv.setText(w.titleLabel);
+            subtitleView.setText(w.subtitleLabel);
             //b.setText(w.buttonLabel);
 
             // Sets a listener for the button, and a tag for the button as well.
