@@ -23,7 +23,6 @@ public class ReaderActivity extends AppCompatActivity {
     static final public String MYPREFS = "myprefs";
     static final public String PREF_URL = "restore_url";
     static final public String WEBPAGE_NOTHING = "about:blank";
-    static final public String MY_WEBPAGE = "http://users.soe.ucsc.edu/~luca/android.html";
     static final public String LOG_TAG = "webview_example";
 
     WebView myWebView;
@@ -80,7 +79,7 @@ public class ReaderActivity extends AppCompatActivity {
         @JavascriptInterface
         public void myFunction(String args) {
             final String myArgs = args;
-            Log.i(LOG_TAG, "I am in the javascript call.");
+            //Log.i(LOG_TAG, "I am in the javascript call.");
             runOnUiThread(new Runnable() {
                 public void run() {
                     Button v = (Button) findViewById(R.id.button1);
@@ -147,27 +146,4 @@ public class ReaderActivity extends AppCompatActivity {
         }
     }
 
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }

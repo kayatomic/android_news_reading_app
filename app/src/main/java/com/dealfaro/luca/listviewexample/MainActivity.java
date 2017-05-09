@@ -79,28 +79,8 @@ public class MainActivity extends AppCompatActivity {
             // Fills in the view.
             TextView tv = (TextView) newView.findViewById(R.id.itemText);
             TextView subtitleView = (TextView) newView.findViewById(R.id.subtitleView);
-            //Button b = (Button) newView.findViewById(R.id.itemButton);
             tv.setText(w.titleLabel);
             subtitleView.setText(w.subtitleLabel);
-            //b.setText(w.buttonLabel);
-
-            // Sets a listener for the button, and a tag for the button as well.
-            //b.setTag(new Integer(position));
-            /*b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Reacts to a button press.
-                    // Gets the integer tag of the button.
-                    String s = v.getTag().toString();
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(context, s, duration);
-                    toast.show();
-                    // Let's remove the list item.
-                    int i = Integer.parseInt(s);
-                    aList.remove(i);
-                    aa.notifyDataSetChanged();
-                }
-            });*/
 
             // Set a listener for the whole list item.
             newView.setTag(w.urlLabel);
@@ -142,18 +122,9 @@ public class MainActivity extends AppCompatActivity {
     public void clickRefresh (View v) {
         Log.i(LOG_TAG, "Requested a refresh of the list");
         Random rn = new Random();
-        //SecureRandomString srs = new SecureRandomString();
 
         String get_url = "https://luca-ucsc-teaching-backend.appspot.com/hw4/get_news_sites";
 
-        // How long a list do we make?
-        //int n = 4 + rn.nextInt(10);
-        // Let's fill the array with n random strings.
-        // NOTE: aList is associated to the array adapter aa, so
-        // we cannot do here aList = new ArrayList<ListElement>() ,
-        // otherwise we create another ArrayList which would not be
-        // associated with aa.
-        // aList = new ArrayList<ListElement>(); --- NO
         aList.clear();
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
@@ -188,15 +159,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         queue.add(jsObjRequest);
-
-//        for (int i = 0; i < n; i++) {
-//            aList.add(new ListElement(
-//                "sup", "Delete"
-//            ));
-//        }
-        // We notify the ArrayList adapter that the underlying list has changed,
-        // triggering a re-rendering of the list.
-        //aa.notifyDataSetChanged();
     }
 
 }
