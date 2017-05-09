@@ -27,13 +27,13 @@ public class ReaderActivity extends AppCompatActivity {
     static final public String LOG_TAG = "webview_example";
 
     WebView myWebView;
-    String news_url = "www.google.com";
+    String news_url = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
         myWebView = (WebView) findViewById(R.id.webView1);
-        myWebView.setWebViewClient(new WebViewClient()); // change to new MyWebViewClient
+        myWebView.setWebViewClient(new MyWebViewClient()); // change to new MyWebViewClient
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         // Binds the Javascript interface
@@ -51,11 +51,11 @@ public class ReaderActivity extends AppCompatActivity {
         myWebView.loadUrl("javascript:alert(\"Hello\")");
 
     }
-    /*
+
     private class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (Uri.parse(url).getHost().contains(news_url)) {
+            if (url.contains(news_url)) {
                 // This is my web site, so do not override; let my WebView load the page
                 return false;
             }
@@ -65,7 +65,7 @@ public class ReaderActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
-    }*/
+    }
 
 
     public class JavaScriptInterface {
