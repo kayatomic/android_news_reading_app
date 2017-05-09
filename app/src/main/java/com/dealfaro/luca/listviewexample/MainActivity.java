@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
         ListView myListView = (ListView) findViewById(R.id.listView);
         myListView.setAdapter(aa);
         aa.notifyDataSetChanged();
+        View v = (View) findViewById(R.id.refreshButton);
+        clickRefresh(v);
     }
 
 
